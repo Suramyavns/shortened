@@ -1,4 +1,4 @@
-from flask import Flask,redirect,jsonify,request
+from flask import Flask,render_template,redirect,jsonify,request
 from crud import *
 
 app = Flask(__name__)
@@ -35,7 +35,7 @@ def go_to(uuid):
     url = get_url(uuid)
     if url:
         return redirect(url)
-    return jsonify('BAD REQUEST')
+    return render_template('bad-request.html')
 
 if __name__=='__main__':
     app.run(debug=True)

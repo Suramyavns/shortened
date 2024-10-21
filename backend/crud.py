@@ -5,6 +5,10 @@ from uuid import UUID
 import validators
 from database import db_session
 from models import Urls,IDs
+import logging
+
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 def add_url(url):
     '''
@@ -17,7 +21,6 @@ def add_url(url):
         db_session.flush()
         data = IDs(url_id=obj.id)
         db_session.add(data)
-        db_session.flush()
         db_session.commit()
         return data.uuid
     return None

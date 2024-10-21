@@ -7,6 +7,7 @@ from flask import Flask,render_template,redirect,jsonify,request
 from crud import add_url,get_url
 from flask_cors import CORS
 import argparse
+from database import *
 
 argparser = argparse.ArgumentParser()
 load_dotenv()
@@ -51,14 +52,10 @@ def insert_url():
     method = request.method
     if method=='POST':
         data = request.get_json()
-        try:
-            uuid = add_url(str(data['url']))
-            if uuid:
-                return jsonify({'uuid':uuid}),201
-            return jsonify({"messsage":'Invalid url!'}),400
-        except Exception as e:
-            print(e)
-            return jsonify({'message':'URL either already exists or not specified in request'}),400
+        uuid = add_url(str(data['url']))
+        if uuid:
+            return jsonify({'uuid':uuid}),201
+        return jsonify({"message":'Invalid url!'}),400
     return render_template('bad-request.html')
 
 @app.route('/<string:uuid>',methods=['GET','POST'])
@@ -72,6 +69,7 @@ def go_to(uuid):
     return render_template('not-found.html')
 
 if __name__=='__main__':
+    init_db()
     argparser.add_argument("--debug",help='Run the app in debug mode',action='store_true')
     args = argparser.parse_args()
     app.run(debug=args.debug)

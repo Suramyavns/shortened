@@ -5,12 +5,14 @@ import os
 from dotenv import load_dotenv
 from flask import Flask,render_template,redirect,jsonify,request
 from crud import add_url,get_url
+from flask_cors import CORS
 import argparse
 
 argparser = argparse.ArgumentParser()
 load_dotenv()
 apiKey = os.getenv('apiKey')
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/',methods=['GET','POST'])
 def root():
@@ -32,11 +34,11 @@ def fetch_url():
         try:
             uuid = request.get_json()['uuid']
         except:
-            return jsonify({'message':'Provide correct uuid!'})
+            return jsonify({'message':'Provide correct uuid!'}),400
         url = get_url(uuid)
         if url:
-            return jsonify({'url':url})
-        return jsonify({'message':'Invalid uuid!'})
+            return jsonify({'url':url}),201
+        return jsonify({'message':'Invalid uuid!'}),400
     return render_template('bad-request.html')
 @app.route('/add_url',methods=['GET','POST'])
 def insert_url():
@@ -52,10 +54,11 @@ def insert_url():
         try:
             uuid = add_url(str(data['url']))
             if uuid:
-                return jsonify({'uuid':uuid})
-            return jsonify({"messsage":'Invalid url!'})
-        except:
-            return jsonify({'message':'URL not specified'})
+                return jsonify({'uuid':uuid}),201
+            return jsonify({"messsage":'Invalid url!'}),400
+        except Exception as e:
+            print(e)
+            return jsonify({'message':'URL either already exists or not specified in request'}),400
     return render_template('bad-request.html')
 
 @app.route('/<string:uuid>',methods=['GET','POST'])

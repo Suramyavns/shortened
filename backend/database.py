@@ -9,7 +9,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-engine = create_engine(os.getenv('dburl'))
+engine = create_engine(os.getenv('dburl'),
+    pool_size=10,          # Default is usually 5
+    max_overflow=20,       # Allows for temporary connections above the pool_size
+    pool_timeout=30,       # Time to wait for a connection to become available
+    pool_pre_ping=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))

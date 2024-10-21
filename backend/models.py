@@ -25,4 +25,4 @@ class ids(Base):
         self.id = url_id
 
     def __repr__(self):
-        return f'<URL {self.url} >'
+        return f'<ID {self.uuid} >'

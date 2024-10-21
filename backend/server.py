@@ -12,14 +12,14 @@ load_dotenv()
 apiKey = os.getenv('apiKey')
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/',methods=['GET','POST'])
 def root():
     '''
     This will return a simple html page showing no content here
     '''
     return render_template('no-content.html')
 
-@app.route('/get_url')
+@app.route('/get_url',methods=['GET','POST'])
 def fetch_url():
     '''
     This is fetch the URL from given id in request data if method is POST.
@@ -38,7 +38,7 @@ def fetch_url():
             return jsonify({'url':url})
         return jsonify({'message':'Invalid uuid!'})
     return render_template('bad-request.html')
-@app.route('/add_url')
+@app.route('/add_url',methods=['GET','POST'])
 def insert_url():
     '''
     This is add the given URL in request body if method is POST.
@@ -58,7 +58,7 @@ def insert_url():
             return jsonify({'message':'URL not specified'})
     return render_template('bad-request.html')
 
-@app.route('/<string:uuid>')
+@app.route('/<string:uuid>',methods=['GET','POST'])
 def go_to(uuid):
     '''
     This function will redirect the user to the correct URL

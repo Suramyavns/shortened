@@ -1,9 +1,14 @@
+'''
+This module specifies the entities and their attributes for the database
+'''
+import uuid as v4
 from sqlalchemy import Column, Integer, String,UUID,ForeignKey
 from database import Base
-import uuid as v4
-from sqlalchemy.orm import relationship
 
-class urls(Base):
+class Urls(Base):
+    '''
+    This entity will store url along with a primary key
+    '''
     __tablename__ = 'urls'
     id = Column(Integer, primary_key=True)
     url = Column(String(10000), unique=True)
@@ -14,8 +19,11 @@ class urls(Base):
 
     def __repr__(self):
         return f'<URL {self.url} >'
-    
-class ids(Base):
+
+class IDs(Base):
+    '''
+    This entity will store the IDs of each URL mapped to a UUID for security reasons
+    '''
     __tablename__='ids'
     uuid = Column(UUID(as_uuid=True),primary_key=True)
     id = Column(Integer,ForeignKey('urls.id'),nullable=False)

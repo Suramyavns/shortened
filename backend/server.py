@@ -1,9 +1,15 @@
 '''
 This is the main module for this server backend
 '''
+import os
+from dotenv import load_dotenv
 from flask import Flask,render_template,redirect,jsonify,request
 from crud import add_url,get_url
+import argparse
 
+argparser = argparse.ArgumentParser()
+load_dotenv()
+apiKey = os.getenv('apiKey')
 app = Flask(__name__)
 
 @app.route('/')
@@ -19,6 +25,8 @@ def fetch_url():
     This is fetch the URL from given id in request data if method is POST.
     Returns bad-request page for GET request on this API
     '''
+    if request.headers.get('x-api-key')!=apiKey:
+        return render_template('unauthorized.html')
     method = request.method
     if method=='POST':
         try:
@@ -36,6 +44,8 @@ def insert_url():
     This is add the given URL in request body if method is POST.
     Returns bad-request page for GET request on this API
     '''
+    if request.headers.get('x-api-key')!=apiKey:
+        return render_template('unauthorized.html')
     method = request.method
     if method=='POST':
         data = request.get_json()
@@ -59,4 +69,6 @@ def go_to(uuid):
     return render_template('not-found.html')
 
 if __name__=='__main__':
-    app.run(debug=True)
+    argparser.add_argument("--debug",help='Run the app in debug mode',action='store_true')
+    args = argparser.parse_args()
+    app.run(debug=args.debug)

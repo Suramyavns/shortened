@@ -5,10 +5,6 @@ from uuid import UUID
 import validators
 from database import db_session
 from models import Urls,IDs
-import logging
-
-logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 def add_url(url):
     '''
